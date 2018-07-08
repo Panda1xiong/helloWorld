@@ -8,7 +8,12 @@
 
 class TServer
 {
-
+public:
+    TServer();
+    ~TServer();
+private:
+public:
+    void Start();
 };
 
 

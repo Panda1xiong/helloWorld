@@ -7,7 +7,8 @@
 
 int main(int argc, char** argv)
 {
-
+    TServer server;
+    server.Start();
 
 
     return 0;
