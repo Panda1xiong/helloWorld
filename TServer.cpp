@@ -54,22 +54,24 @@ void TServer::Start()
 
     fd_set fdSet;
     struct timeval tv;
-    char buf[1024];
+    char buf[10];
 
     vector<int> vec_fd;
+    vector<int>::iterator fd_begin;
     int maxfd = sockfd;
+
 
     while (true)
     {
         FD_ZERO(&fdSet);
         FD_SET(sockfd,&fdSet);
-        for (auto& a:vec_fd)
+        for (fd_begin = vec_fd.begin(); fd_begin != vec_fd.end(); fd_begin++)
         {
-            FD_SET(a, &fdSet);
+            FD_SET(*fd_begin, &fdSet);
         }
 
-        tv.tv_sec = 10;
-        tv.tv_usec = 1000;
+        tv.tv_sec = 0;
+        tv.tv_usec = 0;
 
         switch ((select(maxfd + 1, &fdSet, NULL, NULL, &tv)))
         {
@@ -93,17 +95,30 @@ void TServer::Start()
                             maxfd = currentfd;
                         }
                         cout << "an new connection comes" << endl;
+                        cout << vec_fd.size() << endl;
                     }
 
                 } else
                 {
-                    for (auto& a:vec_fd)
+                    if (vec_fd.size() > 0)
                     {
-                        if (FD_ISSET(a, &fdSet))
+
+                        for (fd_begin = vec_fd.begin(); fd_begin != vec_fd.end(); fd_begin++)
                         {
-                            memset(buf, 0, sizeof(buf));
-                            read(a, buf, sizeof(buf));
-                            cout << "recv:" << buf << endl;
+                            if (FD_ISSET(*fd_begin, &fdSet))
+                            {
+                                memset(buf, 0, sizeof(buf));
+                                ssize_t readLen = read(*fd_begin, buf, sizeof(buf));
+                                if (readLen > 0)
+                                {
+                                    cout << "recv:" << buf << endl;
+                                } else if (readLen <= 0)
+                                {
+                                    FD_CLR(*fd_begin, &fdSet);
+                                    vec_fd.erase(fd_begin);
+                                    break;
+                                }
+                            }
                         }
                     }
 

@@ -5,8 +5,9 @@
 #ifndef HELLOWORLD_TSERVER_H
 #define HELLOWORLD_TSERVER_H
 
+#include "TTcpBase.h"
 
-class TServer
+class TServer : public TTcpBase
 {
 public:
     TServer();

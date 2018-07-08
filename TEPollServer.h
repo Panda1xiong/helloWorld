@@ -5,12 +5,13 @@
 #ifndef HELLOWORLD_EPOOLSERVER_H
 #define HELLOWORLD_EPOOLSERVER_H
 
+#include "TTcpBase.h"
 
-class EPollServer
+class TEPollServer : public TTcpBase
 {
 public:
-    EPollServer();
-    ~EPollServer();
+    TEPollServer();
+    ~TEPollServer();
 private:
 public:
     void Start();

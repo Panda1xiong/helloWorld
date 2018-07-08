@@ -7,9 +7,10 @@
 
 int main(int argc, char** argv)
 {
-    TServer server;
-    server.Start();
 
+    TTcpBase* tcpServer = new TServer();
+    tcpServer->Start();
+    delete (tcpServer);
 
     return 0;
 }
