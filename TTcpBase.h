@@ -5,13 +5,17 @@
 #ifndef HELLOWORLD_TTCPBASE_H
 #define HELLOWORLD_TTCPBASE_H
 
+#include <cstdint>
 
 class TTcpBase
 {
 public:
     TTcpBase();
+    TTcpBase(int fds, uint16_t port, char* addr);
     virtual ~TTcpBase();
-private:
+
+protected:
+    int g_socket;
 public:
     virtual void Start() = 0;
 };

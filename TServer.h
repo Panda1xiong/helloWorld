@@ -11,6 +11,7 @@ class TServer : public TTcpBase
 {
 public:
     TServer();
+    TServer(int fds, uint16_t port, char* addr);
     ~TServer();
 private:
 public:

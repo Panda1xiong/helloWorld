@@ -13,7 +13,13 @@
 
 using namespace std;
 
-TServer::TServer()
+
+TServer::TServer() : TTcpBase()
+{
+
+}
+
+TServer::TServer(int fds, uint16_t port, char* addr) : TTcpBase(fds, port, addr)
 {
 }
 
@@ -24,33 +30,7 @@ TServer::~TServer()
 
 void TServer::Start()
 {
-    int sockfd;
-    if (-1 == (sockfd = socket(AF_INET, SOCK_STREAM, 0)))
-    {
-        cout << "error in socket:" << strerror(errno) << endl;
-    }
 
-
-    struct sockaddr_in s_addr,c_addr;
-    memset(&s_addr,0, sizeof(struct sockaddr_in));
-
-    int len = sizeof(struct sockaddr_in);
-
-
-//    s_addr.sin_addr.s_addr = inet_addr("192.168.3.14");
-    s_addr.sin_addr.s_addr = INADDR_ANY;
-    s_addr.sin_family = AF_INET;
-    s_addr.sin_port = htons(6000);
-
-    if (-1 == bind(sockfd,(struct sockaddr*)&s_addr, len))
-    {
-        cout << "error in bind:" << strerror(errno) << endl;
-    }
-
-    if (-1 == listen(sockfd, 10))
-    {
-        cout << "error in listen:" << strerror(errno) << endl;
-    }
 
     fd_set fdSet;
     struct timeval tv;
@@ -58,13 +38,16 @@ void TServer::Start()
 
     vector<int> vec_fd;
     vector<int>::iterator fd_begin;
-    int maxfd = sockfd;
+    int maxfd = g_socket;
 
+    struct sockaddr_in c_addr;
+
+    int len = sizeof(struct sockaddr_in);
 
     while (true)
     {
         FD_ZERO(&fdSet);
-        FD_SET(sockfd,&fdSet);
+        FD_SET(g_socket,&fdSet);
         for (fd_begin = vec_fd.begin(); fd_begin != vec_fd.end(); fd_begin++)
         {
             FD_SET(*fd_begin, &fdSet);
@@ -81,11 +64,11 @@ void TServer::Start()
             case 0:     //Time out & Nothing happennd0
                 break;
             default:
-                if (FD_ISSET(sockfd,&fdSet))
+                if (FD_ISSET(g_socket,&fdSet))
                 {
                     memset(&c_addr,0, len);
                     socklen_t slen = len;
-                    int currentfd = accept(sockfd, (struct sockaddr*)&c_addr, &slen);
+                    int currentfd = accept(g_socket, (struct sockaddr*)&c_addr, &slen);
                     if (-1!=currentfd)
                     {
 //                        FD_SET(currentfd, &fdSet);

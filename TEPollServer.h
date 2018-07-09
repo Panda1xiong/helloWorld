@@ -11,6 +11,7 @@ class TEPollServer : public TTcpBase
 {
 public:
     TEPollServer();
+    TEPollServer(int fds, uint16_t port, char* addr);
     ~TEPollServer();
 private:
 public:
