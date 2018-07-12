@@ -69,7 +69,7 @@ void TServer::Start()
                     memset(&c_addr,0, len);
                     socklen_t slen = len;
                     int currentfd = accept(g_socket, (struct sockaddr*)&c_addr, &slen);
-                    if (-1!=currentfd)
+                    if (0 < currentfd)
                     {
 //                        FD_SET(currentfd, &fdSet);
                         vec_fd.push_back(currentfd);
@@ -95,11 +95,11 @@ void TServer::Start()
                                 if (readLen > 0)
                                 {
                                     cout << "recv:" << buf << endl;
-                                } else if (readLen <= 0)
+                                } else if(-1 == readLen)
                                 {
                                     FD_CLR(*fd_begin, &fdSet);
                                     vec_fd.erase(fd_begin);
-                                    break;
+                                    cout << "one client leave" << endl;
                                 }
                             }
                         }
